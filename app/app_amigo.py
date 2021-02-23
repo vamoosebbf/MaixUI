@@ -505,7 +505,7 @@ class app:
         app.btn.expand_event()
         if app.btn.home() == 2 or launcher.app_run: # click button release to 2
             launcher.app_run = False
-            # print('into', app.layer)
+            print('into', app.layer)
             if app.layer == 1:
                 app.layer += 1
                 # launcher into application
@@ -613,6 +613,13 @@ class app:
 #'''
 if __name__ == "__main__":
     import lcd
+    from Maix import utils
+    import machine
+
+    if utils.gc_heap_size() != 1024*1024:
+        utils.gc_heap_size(1024*1024) # 1MiB
+        machine.reset()
+    
     lcd.init()
     print_mem_free()
     app.run()

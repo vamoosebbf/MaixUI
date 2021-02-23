@@ -26,13 +26,16 @@ class container:
     def event():
       pass
 
+  # current: 当前页面
+  # temp: 暂存页面, 当调用 forever 时, 赋给 current 并清空 temp
+  # history: 上一次页面
   current, temp, history = demo, None, None
 
   def forever():
-    if container.temp != None:
+    if container.temp != None: # 现在有页面需要跳转
       container.current, container.temp = container.temp, None
       container.current.load()
-    if container.current != None:
+    if container.current != None: # 显示当前页面
       container.current.event()
 
   def reload(app):

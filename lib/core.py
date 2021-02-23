@@ -9,15 +9,15 @@
 class agent:
 
   def __init__(self):
-    self.msg = []
-    self.arg = {}
+    self.msg = [] # [][4] 类型， [][0] 时间, [][1] 周期， [][2] 函数， [][3] 参数
 
   def get_ms(self):
     import time
     # return time.time() * 1000
     return time.ticks_ms()
 
-  def event(self, cycle, func, args=None):
+  # add envent
+  def event(self, cycle, func, args=None): 
     # arrived, cycle, function
     tmp = (self.get_ms() + cycle, cycle, func, args)
     #print('self.event', tmp)
@@ -38,12 +38,14 @@ class agent:
     self.event(obj[1], obj[2], obj[3])
     obj[2](obj[3]) if obj[3] else obj[2]() # exec function
 
+  # 执行第一个 event
   def cycle(self):
     if (len(self.msg)):
       obj = self.msg[0]
       if (self.get_ms() >= obj[0]):
         self.call(obj, 0)
 
+  # 顺序执行所有 event
   def parallel_cycle(self):
     for pos in range(len(self.msg)): # maybe use map
       obj = self.msg[pos]

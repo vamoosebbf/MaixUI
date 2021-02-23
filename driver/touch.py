@@ -6,6 +6,14 @@
 #
 
 import time
+from fpioa_manager import fm
+from Maix import GPIO
+from machine import I2C
+
+try:
+    from core import system
+except ImportError:
+    from lib.core import system
 
 FT_DEVIDE_MODE = 0x00
 FT_ID_G_MODE = 0xA4
@@ -18,23 +26,23 @@ class TouchLow:
   i2c3 = None
   addr = 0x0
 
-  def config(i2c3, addr=FT6X36_ADDR):
-    TouchLow.i2c3 = i2c3
+  def config(i2c, addr=FT6X36_ADDR):
+    TouchLow.i2c = i2c
     TouchLow.addr = addr
 
   def write_reg(reg_addr, buf):
-    TouchLow.i2c3.writeto_mem(TouchLow.addr, reg_addr, buf, mem_size=8)
+    TouchLow.i2c.writeto_mem(TouchLow.addr, reg_addr, buf, mem_size=8)
 
   def read_reg(reg_addr, buf_len):
-    return TouchLow.i2c3.readfrom_mem(TouchLow.addr, reg_addr, buf_len, mem_size=8)
+    return TouchLow.i2c.readfrom_mem(TouchLow.addr, reg_addr, buf_len, mem_size=8)
 
   def config_ft6x36():
     TouchLow.write_reg(FT_DEVIDE_MODE, 0); # 进入正常操作模式
     TouchLow.write_reg(FT_ID_G_THGROUP, 12); # 设置触摸有效值，触摸有效值，12，越小越灵敏
-    TouchLow.write_reg(FT_DEVIDE_MODE, 14); # 激活周期，不能小于12，最大14
+    TouchLow.write_reg(FT_ID_G_PERIODACTIVE, 14); # 激活周期，不能小于12，最大14
 
   def get_point():
-    if TouchLow.i2c3 != None:
+    if TouchLow.i2c != None:
       #data = self.read_reg(0x01, 1)
       #print("get_gesture:" + str(data))
       data = TouchLow.read_reg(0x02, 1)
@@ -52,47 +60,67 @@ class TouchLow:
 
 class Touch:
 
-  idle, press, release = 0, 1, 2
-
-  def __init__(self, w, h, cycle=1000):
+  click, idle, press, release = "Touch.click", "Touch.idle", "Touch.press", "Touch.release"
+  
+  def __init__(self, i2c, w, h, cycle=1000, irq_pin = 33):
     self.cycle = cycle
     self.last_time = 0
     self.points = [(0, 0, 0), (0, 0, 0)]
     self.state = Touch.idle
     self.width, self.height = w, h
+    
+    # touch dirver init
+    if i2c == None:
+      i2c = I2C(I2C.I2C3, freq=100*1000, scl=24, sda=27) # amigo
+    TouchLow.config(i2c=i2c) 
+    
+    # 触摸事件
+    self.events = []
+    fm.register(irq_pin, fm.fpioa.GPIOHS2, force=True)
+    key=GPIO(GPIO.GPIOHS2,GPIO.IN, GPIO.PULL_DOWN)
+    key.irq(self.press_check, GPIO.IRQ_BOTH, GPIO.WAKEUP_NOT_SUPPORT, 7)
 
-  def event(self):
+    system.event(5, self.release_check)
+
+  # 松手检测, 轮询检测
+  def release_check(self):
+    # timeout return ilde.
+    if (time.ticks_ms() > self.last_time + self.cycle) and (self.state != Touch.idle):
+        if self.state == Touch.release:
+            self.state = Touch.idle
+            self.points = [(0, 0, 0), (0, 0, 0)]
+        if self.state == Touch.press:
+            self.state = Touch.release
+        self._events_cycle() # 通知所有已注册 touch event 控件
+
+  # 按压检测, 中断触发
+  def press_check(self, num):
     tmp = TouchLow.get_point()
     if tmp != None:
       x, y = tmp
+      y = self.height - y
       self.last_time = time.ticks_ms()
       if self.state != Touch.press:
           self.state = Touch.press
           self.points[0] = (x, y, time.ticks_ms())
       self.points[1] = (x, y, time.ticks_ms())
+      self._events_cycle() # 通知所有已注册 touch event 控件
 
-    # timeout return ilde.
-    if time.ticks_ms() > self.last_time + self.cycle:
-        if self.state == Touch.release:
-            self.state = Touch.idle
-            self.points = [(0, 0, 0), (0, 0, 0)]
-            return
-        if self.state == Touch.press:
-            self.state = Touch.release
-            return
+  def _events_cycle(self):
+    for eve in self.events:
+      eve[0](eve[1]) if eve[1] else eve[0]()
+  
+  def register_touch_event(self, func, args = None):
+    self.events.append([func, args])
 
-if __name__ == "__main__":
+  def unregister_touch_event(self, func, args = None):
+    for i in self.events:
+      if i == [func, args]:
+            self.events.remove(i)
 
-  import lcd
-  from machine import I2C
+touch = Touch(i2c = None, w = 480, h = 320, cycle = 20, irq_pin = 33)
 
-  i2c = I2C(I2C.I2C3, freq=1000*1000, scl=24, sda=27) # amigo
-  devices = i2c.scan()
-  print(devices)
-  TouchLow.config(i2c)
-  tmp = Touch(480, 320, 200)
-  while 1:
-    #tmp.get_point()
-    tmp.event()
-    print(tmp.state, tmp.points)
-    #time.sleep_ms(200)
+if __name__ == '__main__':
+    while  True:
+        system.parallel_cycle()
+    

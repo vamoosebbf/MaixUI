@@ -31,17 +31,18 @@ class launcher:
 
   def free():
     __class__.ctrl = None
-
+  ui.height, ui.weight = 320,320
   @ui.warp_template(ui.blank_draw)
-  @ui.warp_template(ui.grey_draw)
-  @ui.warp_template(ui.bg_in_draw)
-  @ui.warp_template(ui.anime_in_draw)
-  @ui.warp_template(ui.help_in_draw)
+  # @ui.warp_template(ui.grey_draw)
+  # @ui.warp_template(ui.bg_in_draw)
+  @ui.warp_template(ui.anime_draw)
+  # @ui.warp_template(ui.help_in_draw)
   #@ui.warp_template(taskbar.time_draw)
   #@ui.warp_template(taskbar.mem_draw)
   #@catch # need sipeed_button
+
   def draw():
-    height = 100 + int(get_time_curve(3, 250) * 60)
+    height = 100
     pos = draw_dialog_alpha(ui.canvas, 20, height, 200, 20, 10, color=(255, 0, 0), alpha=200)
     ui.canvas.draw_string(pos[0] + 10, pos[1] + 10, "Welcome to MaixUI", scale=2, color=(0,0,0))
     ui.display()
@@ -51,6 +52,8 @@ class launcher:
 
 if __name__ == "__main__":
   container.reload(launcher)
+  system.parallel_cycle()
+
   while True:
     while True:
       last = time.ticks_ms() - 1

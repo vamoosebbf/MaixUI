@@ -22,7 +22,7 @@ class ui:
     bg_path = os.getcwd() + "/res/images/bg.jpg"
     logo_path = os.getcwd() + "/res/images/logo.jpg"
 
-    height, weight = lcd.height(), lcd.width()
+    height, width = lcd.height(), lcd.width()
     enable = True
 
     def warp_template(func):
@@ -33,17 +33,17 @@ class ui:
 
     def blank_draw():
         if ui.enable:
-            ui.canvas = image.Image(size=(ui.height, ui.weight)
+            ui.canvas = image.Image(size=(ui.width, ui.height)
                                 )  # 10ms # 168.75kb (112kb)
 
     def grey_draw():
         if ui.enable:
-            ui.canvas.draw_rectangle((0, 0, ui.height, ui.weight),
+            ui.canvas.draw_rectangle((0, 0, ui.width, ui.height),
                                  fill=True, color=(75, 75, 75))
 
     def bg_in_draw():
         if ui.enable:
-            #ui.canvas.draw_rectangle((0, 0, ui.height, ui.weight),
+            #ui.canvas.draw_rectangle((0, 0, ui.height, ui.width),
                                     #fill=True, color=(75, 75, 75))
             #if ui.bak == None:
             #ui.bak.draw_rectangle((60,30,120,150), fill=True, color=(250, 0, 0))
@@ -119,21 +119,11 @@ class ui:
                                 color=(r, g, b), thickness=(g % 5))  # 10ms
 
     def display():  # 10ms
-        try:
-            if ui.canvas != None:
-                lcd.display(ui.canvas)
-        finally:
-            try:
-                if ui.canvas != None:
-                    tmp = ui.canvas
-                    ui.canvas = None
-                    del tmp
-            except Exception as e:
-                pass
-                # gc.collect()
+        if ui.canvas != None:
+            lcd.display(ui.canvas)
 
 if __name__ == "__main__":
-    # ui.height, ui.weight = 480, 320 # amigo
+    # ui.height, ui.width = 480, 320 # amigo
     #@ui.warp_template(ui.blank_draw)
     #@ui.warp_template(ui.bg_draw)
     #@ui.warp_template(ui.anime_draw)
