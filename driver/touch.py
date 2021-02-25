@@ -78,19 +78,19 @@ class Touch:
     self.events = []
     fm.register(irq_pin, fm.fpioa.GPIOHS2, force=True)
     key=GPIO(GPIO.GPIOHS2,GPIO.IN, GPIO.PULL_DOWN)
-    key.irq(self.press_check, GPIO.IRQ_BOTH, GPIO.WAKEUP_NOT_SUPPORT, 7)
+    key.irq(self.press_check, GPIO.IRQ_FALLING, GPIO.WAKEUP_NOT_SUPPORT, 7)
 
     system.event(5, self.release_check)
 
   # 松手检测, 轮询检测
-  def release_check(self):
+  def release_check(self):        
     # timeout return ilde.
     if (time.ticks_ms() > self.last_time + self.cycle) and (self.state != Touch.idle):
-        if self.state == Touch.release:
+        if self.state == Touch.click:
             self.state = Touch.idle
             self.points = [(0, 0, 0), (0, 0, 0)]
         if self.state == Touch.press:
-            self.state = Touch.release
+            self.state = Touch.click
         self._events_cycle() # 通知所有已注册 touch event 控件
 
   # 按压检测, 中断触发
@@ -103,8 +103,8 @@ class Touch:
       if self.state != Touch.press:
           self.state = Touch.press
           self.points[0] = (x, y, time.ticks_ms())
+          self._events_cycle() # 通知所有已注册 touch event 控件
       self.points[1] = (x, y, time.ticks_ms())
-      self._events_cycle() # 通知所有已注册 touch event 控件
 
   def _events_cycle(self):
     for eve in self.events:
@@ -118,7 +118,7 @@ class Touch:
       if i == [func, args]:
             self.events.remove(i)
 
-touch = Touch(i2c = None, w = 480, h = 320, cycle = 20, irq_pin = 33)
+touch = Touch(i2c = None, w = 480, h = 320, cycle = 50, irq_pin = 33)
 
 if __name__ == '__main__':
     while  True:
