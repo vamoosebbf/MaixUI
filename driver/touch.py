@@ -103,17 +103,17 @@ class Touch:
       if self.state != Touch.press:
           self.state = Touch.press
           self.points[0] = (x, y, time.ticks_ms())
-          self._events_cycle() # 通知所有已注册 touch event 控件
       self.points[1] = (x, y, time.ticks_ms())
+      self._events_cycle() # 通知所有已注册 touch event 控件
 
   def _events_cycle(self):
     for eve in self.events:
-      eve[0](eve[1]) if eve[1] else eve[0]()
+        eve[0](eve[1:]) if eve[1:] else eve[0]()
   
-  def register_touch_event(self, func, args = None):
+  def register_touch_event(self, func, *args):
     self.events.append([func, args])
 
-  def unregister_touch_event(self, func, args = None):
+  def unregister_touch_event(self, func, *args):
     for i in self.events:
       if i == [func, args]:
             self.events.remove(i)
@@ -121,6 +121,11 @@ class Touch:
 touch = Touch(i2c = None, w = 480, h = 320, cycle = 50, irq_pin = 33)
 
 if __name__ == '__main__':
+    def on_touch(s):
+        print(touch.state)
+    s = "touch it"
+    a = 1
+    touch.register_touch_event(on_touch, s, a)
     while  True:
         system.parallel_cycle()
     
