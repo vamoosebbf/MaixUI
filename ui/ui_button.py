@@ -60,8 +60,12 @@ class Button(Widget):
 if __name__ == '__main__':
     try:
         from ui_canvas import Canvas
+        from touch import Touch
+        from core import system
     except:
         from ui.ui_canvas import Canvas
+        from driver.touch import Touch
+        from lib.core import system
 
     # create button
     btn = Button(0, 0, 80, 80)
