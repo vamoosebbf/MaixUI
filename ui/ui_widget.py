@@ -10,17 +10,23 @@ except ImportError:
     from lib.core import system
 class Widget:
     def __init__(self, x, y, w, h):
+        self.__panel = image.Image(size = (self.__w, self.__h))
         self.__x = x
         self.__y = y
         self.__w = w
         self.__h = h
+        self.__bg_color = None
         self.__eves = {Touch.press:None, Touch.click: None, Touch.idle:None}
         self.__eargs = {Touch.press:None, Touch.click: None, Touch.idle:None}
         touch.register_touch_event(self.touch_event, None)
 
     # 将 widget 显示在 Canvas 上
     def draw(self, canvas):
-        pass
+        self.__panel.clear()
+        # fill background
+        if self.__bg_color:
+            self.__panel.draw_rectangle(0, 0, self.__w, self.__h, color=self.__bg_color, fill = True)
+        canvas.draw_img(self.__panel, self.__x, self.__y, alpha=255)
 
     def free(self):
         pass
@@ -28,15 +34,12 @@ class Widget:
     def _point_in_widget(self, point):
         x = point[0]
         y = point[1]
-        if x > self.__x and x < self.__x + self.__w and y > self.__y and y < self.__y + self.__h:
+        if x >= self.__x and x <= self.__x + self.__w and y >= self.__y and y <= self.__y + self.__h:
             return True
         return False
     
     def touch_event(self, *args):
-        print(touch.state)
         if self._point_in_widget(touch.points[1]) and self.__eves[touch.state] != None:
-            self.__eves[touch.state](self.__eargs[touch.state]) if self.__eargs[touch.state] else self.__eves[touch.state]()
-        elif touch.state == Touch.idle:
             self.__eves[touch.state](self.__eargs[touch.state]) if self.__eargs[touch.state] else self.__eves[touch.state]()
 
     # eve_name: event name, string type
@@ -77,6 +80,7 @@ class Widget:
     def set_size(self, w, h):
         self.__w = w
         self.__h = h
+        self.__panel = self.__panel.resize(w, h)
     
     def set_pos(self, x, y):
         self.__x = x
@@ -93,21 +97,22 @@ if __name__ == '__main__':
         from driver.touch import Touch
         from lib.core import system
 
-    # create button
+    # create widget
     btn = Widget(0, 0, 100, 100)
+    btn.set_bg_color((255, 255, 255))
     # register event
     def on_press():
         btn.set_bg_color((0,0,255))
         btn.set_size(100, 100)
-        print("btn press")
+        print("wig press")
 
-    def on_release():
+    def on_idle():
         btn.set_bg_color((255, 0, 0))
         btn.set_size(80, 80)
-        print("btn idle")
+        print("wig idle")
     
-    btn.register_event(Touch.click, on_press)
-    btn.register_event(Touch.idle, on_release)
+    btn.register_event(Touch.press, on_press)
+    btn.register_event(Touch.idle, on_idle)
     
     ui = Canvas()
     ui.add_widget(btn)

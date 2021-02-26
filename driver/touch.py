@@ -74,12 +74,13 @@ class Touch:
       i2c = I2C(I2C.I2C3, freq=100*1000, scl=24, sda=27) # amigo
     TouchLow.config(i2c=i2c) 
     
-    # 触摸事件
+    # 按压检测（中断）
     self.events = []
     fm.register(irq_pin, fm.fpioa.GPIOHS2, force=True)
     key=GPIO(GPIO.GPIOHS2,GPIO.IN, GPIO.PULL_DOWN)
     key.irq(self.press_check, GPIO.IRQ_FALLING, GPIO.WAKEUP_NOT_SUPPORT, 7)
 
+    # 添加松手检测（轮训）
     system.event(5, self.release_check)
 
   # 松手检测, 轮询检测

@@ -48,7 +48,7 @@ if __name__ == '__main__':
     checkbox1.set_text("apple")
     checkbox1.set_border_color((255, 255, 255))
 
-    def on_press(btn):
+    def on_press():
         if checkbox1.get_checked():
             checkbox1.set_checked(False)
             checkbox1.set_rect_color((255, 255, 255))
@@ -56,7 +56,8 @@ if __name__ == '__main__':
             checkbox1.set_checked(True)
             checkbox1.set_rect_color((0, 0 ,255))
     
-    checkbox1.register_event(Touch.press, on_press)
+    checkbox1.register_event(Touch.click, on_press)
+
     ui = Canvas()
     ui.add_widget(checkbox1)
     

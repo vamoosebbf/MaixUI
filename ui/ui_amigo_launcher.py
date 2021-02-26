@@ -164,7 +164,7 @@ class launcher:
     launcher.agent.event(50, launcher.touch_event)
 
   def touch_event():
-    launcher.toth.event()
+    # launcher.toth.event()
     #print(launcher.toth.state, launcher.toth.points)
     if launcher.toth.state == 1:
       old = launcher.toth.points[0]
