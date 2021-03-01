@@ -10,11 +10,12 @@ import image, lcd, os, gc
 class Canvas():
     def __init__(self):
         lcd.init(freq=15000000)
+        lcd.clear()
         self.__w = lcd.width()
         self.__h = lcd.height()
         self.img = image.Image(size=(self.__w, self.__h))
         self.__widgets = {}
-        self.__bg_color = None
+        self.__bg_color = (255, 255, 255)
         self.__bg_img_path = None
         self.__bg_img_padding_left = None
         self.__bg_img_padding_top = None
@@ -27,8 +28,8 @@ class Canvas():
 
     def set_bg_color(self, color):
         self.__bg_color = color
+        self.img.draw_rectangle(0, 0, self.__w, self.__h, self.__bg_color, fill = True) # background color
 
-        
     def set_bg_img(self, path, padding_left = None, padding_top = None):
         self.__bg_img_path = path
         img = image.Image(self.__bg_img_path)
@@ -46,25 +47,23 @@ class Canvas():
         if padding_top:
             self.__bg_img_padding_top = padding_top
 
+        self.img.draw_image(image.Image(self.__bg_img_path), self.__bg_img_padding_left, self.__bg_img_padding_top) # background img
+
     def draw_img(self, *args, **kwargs):
         self.img.draw_image(*args, **kwargs)
     
     def display(self):  # 10ms
-        # draw self
-        if self.__bg_img_path and self.__bg_color == None:
-            self.img.draw_image(image.Image(self.__bg_img_path),self.__bg_img_padding_left, self.__bg_img_padding_top, alpha=255)
-        elif self.__bg_color and self.__bg_img_path == None:
-            self.img.draw_rectangle(0, 0, self.__w, self.__h, self.__bg_color, fill = True)
-        elif self.__bg_color and self.__bg_img_path:
-            self.img.draw_rectangle(0, 0, self.__w, self.__h, self.__bg_color, fill = True) # background color
-            self.img.draw_image(image.Image(self.__bg_img_path), self.__bg_img_padding_left, self.__bg_img_padding_top) # background img
-        
         #draw widgets
         for widget in self.__widgets.values():
-            widget.draw(self)
+            widget.draw()
         
         # display
         lcd.display(self.img)
+
+    def clear(self, x, y, w, h):
+        self.img.draw_rectangle(x, y, w, h, color = self.__bg_color, fill = True)
+
+ui = Canvas()
 
 if __name__ == '__main__':
     import time
@@ -73,7 +72,6 @@ if __name__ == '__main__':
     except:
         from lib.core import system
 
-    ui = Canvas()
     
     ui.set_bg_color((75, 0, 75))
 

@@ -13,7 +13,7 @@ except ImportError:
 class ImageBox(Widget):
     def __init__(self, x, y, w, h):
         Widget.__init__(self, x, y, w, h)
-        self.__panel = image.Image(size = (self.__w, self.__h))
+        self.__panel = None
         self._bg_color = (255, 255, 255)
         
         # title text
@@ -24,8 +24,9 @@ class ImageBox(Widget):
         self.__title_color = (255, 255, 255)
 
     def set_image(self, img, padding_left = None, padding_top = None):
-        w = img.width()
-        h = img.height()
+        self.__panel = img
+        w = self.__panel.width()
+        h = self.__panel.height()
         x = (self.__w - w) // 2
         y = (self.__h - h) // 2
         if padding_left:
@@ -33,8 +34,10 @@ class ImageBox(Widget):
         if padding_top:
             y = padding_top
         if self._bg_color:
-            self.__panel.draw_rectangle(0, 0, self.__w, self.__h, self._bg_color, fill = True)
-        self.__panel.draw_image(img, x, y)
+            ui.img.draw_rectangle(self.__x, self.__y, self.__w , self.__h, fill = True)
+        ui.img.draw_image(self.__panel, self.__x + x, self.__y + y)
+        if self.__title != "":
+            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y, self.__title, self.__title_color, scale=self.__title_scale)
 
     def set_title(self, title, color = (255, 255, 255), scale = 1, padding_left = None, padding_top= 5):
         self.__title = title
@@ -47,25 +50,26 @@ class ImageBox(Widget):
             self.__title_x = padding_left
         if padding_top:
             self.__title_y = padding_top
+        if self.__title != "":
+            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y, self.__title, self.__title_color, scale=self.__title_scale)
 
     def set_bg_color(self, color):
         self._bg_color = color
+        if self._bg_color:
+            ui.img.draw_rectangle(self.__x, self.__y, self.__w , self.__h, fill = True)
+        if self.__title != "":
+            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y, self.__title, self.__title_color, scale=self.__title_scale)
 
-    def draw(self, canvas):
-        self.__panel.draw_string(self.__title_x, self.__title_y, self.__title, self.__title_color, scale=self.__title_scale)
-        canvas.draw_img(self.__panel, self.__x, self.__y)
 
 if __name__ == '__main__':
 
     import sensor
 
+    import time
     try:
-        from ui_canvas import Canvas
+        from ui_canvas import ui
     except:
-        from ui.ui_canvas import Canvas
-
-    ui = Canvas()
-
+        from ui.ui_canvas import ui
     sensor.reset()                   
                                         
     sensor.set_pixformat(sensor.RGB565) 
@@ -75,8 +79,10 @@ if __name__ == '__main__':
     box = ImageBox(10, 10, 300, 300)
     box.set_title("sensor image", (0, 0, 0), 2)
     ui.add_widget(box)
-    
+    clock = time.clock()
     while(True):
+        clock.tick()
         img = sensor.snapshot()              
         box.set_image(img)
         ui.display()
+        print(clock.fps())

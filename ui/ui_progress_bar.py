@@ -2,10 +2,12 @@ import os
 import image
 
 try:
+    from ui_canvas import ui
     from ui_widget import Widget
     from touch import Touch,touch
     from core import system
 except ImportError:
+    from ui.ui_canvas import ui
     from ui.ui_widget import Widget
     from driver.touch import touch
     from lib.core import system
@@ -40,57 +42,63 @@ class ProgressBar(Widget):
         current = int((x - self.__x) / self.__w * (self.__end - self.__start))
         self.set_value(current)
 
-    def draw(self, canvas):
-        super().draw(canvas)
+    def draw(self):
+        super().draw()
 
         # draw border
         if self.__border_color:
-            self.__panel.draw_rectangle(0, 0, self.__w, self.__h, color = self.__border_color, thickness = self.__border_thickness)
+            ui.img.draw_rectangle(self.__x, self.__y, self.__w, self.__h, color = self.__border_color, thickness = self.__border_thickness)
 
          # draw bar
-        self.__panel.draw_rectangle(self.__bar_x, self.__bar_y, self.__bar_w, self.__bar_h, self.__bar_color, fill = True)
+        ui.img.draw_rectangle(self.__bar_x + self.__x, self.__bar_y + self.__y, self.__bar_w, self.__bar_h, self.__bar_color, fill = True)
         if self.__bar_border_color:
-            self.__panel.draw_rectangle(self.__bar_x, self.__bar_y, self.__bar_w, self.__bar_h, self.__bar_border_color)
-        canvas.draw_img(self.__panel, self.__x, self.__y)
+            ui.img.draw_rectangle(self.__bar_x + self.__x, self.__bar_y + self.__y, self.__bar_w, self.__bar_h, self.__bar_border_color)
 
     def set_range(self, start, end):
         self.__start = start
         self.__end = end
         self.__bar_w = int(self.__current / (self.__end - self.__start) * self.__w * 0.95)
-
+        
     def set_value(self, val):
+        ui.clear(self.__x, self.__y, self.__w, self.__h)
         self.__current = val
         self.__bar_w = int(self.__current / (self.__end - self.__start) * self.__w * 0.95)
- 
+        self.draw()
+
     def set_bg_border(self, color, thickness):
         self.__border_color = color
         self.__border_thickness = thickness
+        self.draw()
 
-    def set_bar(self, color):
+    def set_bar_color(self, color):
         self.__bar_color = color
+        self.draw()
 
     def set_bar_border(self, color, thickness):
         self.__bar_border_color = color
         self.__bar_border_thickness = thickness
+        self.draw()
     
+    def get_value(self):
+        return self.__current
 if __name__ == '__main__':
-    
-    try:
-        from ui_canvas import Canvas
-    except:
-        from ui.ui_canvas import Canvas
+    import time
+    ui.set_bg_color((75, 0, 75))
+
     # create button
     bar = ProgressBar(40, 30, 400, 30)
     bar.set_bg_color((255, 255, 255))
     
     bar.set_value(100)
 
-    ui = Canvas()
-
-    ui.add_widget(bar)
-    
-    ui.set_bg_color((75, 0, 75))
-
+    clock = time.clock()
+    val = 1
     while True:
+        clock.tick()
+        val +=1
+        if val == 100:
+            val = 1
+        bar.set_value(val)
         ui.display()
         system.parallel_cycle()
+        print(clock.fps())
