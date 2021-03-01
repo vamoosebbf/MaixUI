@@ -59,9 +59,27 @@ class Canvas():
             self.img.draw_rectangle(0, 0, self.__w, self.__h, self.__bg_color, fill = True) # background color
             self.img.draw_image(image.Image(self.__bg_img_path), self.__bg_img_padding_left, self.__bg_img_padding_top) # background img
         
-         #draw widgets
+        #draw widgets
         for widget in self.__widgets.values():
             widget.draw(self)
         
         # display
         lcd.display(self.img)
+
+if __name__ == '__main__':
+    import time
+    try:
+        from core import system
+    except:
+        from lib.core import system
+
+    ui = Canvas()
+    
+    ui.set_bg_color((75, 0, 75))
+
+    clock = time.clock()
+    while True:
+        clock.tick()
+        ui.display()
+        system.parallel_cycle()
+        print(clock.fps())

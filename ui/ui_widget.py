@@ -10,12 +10,13 @@ except ImportError:
     from lib.core import system
 class Widget:
     def __init__(self, x, y, w, h):
-        self.__panel = image.Image(size = (self.__w, self.__h))
         self.__x = x
         self.__y = y
         self.__w = w
         self.__h = h
         self.__bg_color = None
+        self.__panel = image.Image(size = (self.__w, self.__h))
+        
         self.__eves = {Touch.press:None, Touch.click: None, Touch.idle:None}
         self.__eargs = {Touch.press:None, Touch.click: None, Touch.idle:None}
         touch.register_touch_event(self.touch_event, None)
@@ -87,7 +88,7 @@ class Widget:
         self.__y = y
 
 if __name__ == '__main__':
-
+    import time
     try:
         from ui_canvas import Canvas
         from touch import Touch
@@ -119,6 +120,9 @@ if __name__ == '__main__':
     
     ui.set_bg_color((75, 0, 75))
 
+    clock = time.clock()
     while True:
+        clock.tick()
         ui.display()
         system.parallel_cycle()
+        print(clock.fps())
