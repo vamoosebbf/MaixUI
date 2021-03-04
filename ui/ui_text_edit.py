@@ -8,7 +8,7 @@ except:
     from ui.ui_widget import Widget
 
 
-class Label(Widget):
+class TextEdit(Widget):
 
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h)
@@ -29,10 +29,13 @@ class Label(Widget):
     def set_text(self, text, color=(255, 255, 255), scale=1, padding_top=None, padding_left=None):
         self._text = text
         self._text_scale = scale
-        self._text_color = color
+
         # default pos: align center
         str_w = len(self._text) * self._text_scale * 6  # 6： default char width
         str_h = self._text_scale * 10  # 10: default char height
+
+        if str_w > self.__w:
+
         self._text_x = int((self.__w - str_w) / 2)
         self._text_y = int((self.__h - str_h) / 2)
 
