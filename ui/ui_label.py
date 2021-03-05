@@ -33,6 +33,12 @@ class Label(Widget):
         # default pos: align center
         str_w = len(self._text) * self._text_scale * 6  # 6： default char width
         str_h = self._text_scale * 10  # 10: default char height
+        # The character width is larger than the Widget width, discard the excess
+        if str_w > self.__w:
+            text_max_num = self.__w // (self._text_scale * 6)
+            self._text = self._text[0:text_max_num]
+            str_w = text_max_num * (self._text_scale * 6)
+        # test start point
         self._text_x = int((self.__w - str_w) / 2)
         self._text_y = int((self.__h - str_h) / 2)
 
@@ -58,7 +64,7 @@ if __name__ == '__main__':
     ui.set_bg_color((75, 0, 75))
 
     # create button
-    lab = Label(0, 0, 80, 80)
+    lab = Label(10, 10, 80, 80)
     lab.set_bg_color((255, 0, 0))
     lab.set_text("bbb", scale=2)
     lab.set_border((255, 255, 255), 2)

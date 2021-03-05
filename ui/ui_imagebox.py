@@ -39,7 +39,6 @@ class ImageBox(Widget):
         if self._bg_color:
             ui.img.draw_rectangle(self.__x, self.__y,
                                   self.__w, self.__h, fill=True)
-
         ui.img.draw_image(self.__panel, self.__x + x, self.__y + y)
         if self.__title != "":
             ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,

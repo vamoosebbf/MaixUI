@@ -35,12 +35,12 @@ if __name__ == '__main__':
     ui.set_bg_color((75, 0, 75))
     ui.set_bg_img("res/images/bg.jpg")
     # create button
-    bar = Slider(20, 30, 400, 30)
+    bar = Slider(20, 30, 100, 30)
     bar.set_bg_color(None)
 
     bar.set_value(100)
 
-    lab = Label(440, 30, 30, 30)
+    lab = Label(400, 60, 30, 30)
 
     clock = time.clock()
     system.event(1, ui.display)

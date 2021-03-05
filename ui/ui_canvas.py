@@ -37,12 +37,8 @@ class Canvas():
     def set_bg_img(self, path, padding_left=None, padding_top=None):
         self.__bg_color = None
         self.__bg_img = image.Image(
-            self.__bg_img_path).resize(self.__w, self.__h)
-
+            path).resize(self.__w, self.__h)
         self.img.draw_image(self.__bg_img, 0, 0)  # background img
-
-    def draw_img(self, *args, **kwargs):
-        self.img.draw_image(*args, **kwargs)
 
     def display(self):  # 10ms
         # display
@@ -53,7 +49,8 @@ class Canvas():
             self.img.draw_rectangle(
                 x, y, w, h, color=self.__bg_color, fill=True)
         if self.__bg_img:
-            self.img.draw_image(self.__bg_img.copy((x, y, w, h)), x, y)
+            self.img.draw_image(self.__bg_img.copy(
+                (x, y, w, h), copy_to_fb=False), x, y)
 
 
 ui = Canvas()
@@ -72,5 +69,6 @@ if __name__ == '__main__':
     while True:
         clock.tick()
         ui.display()
+        ui.clear(440, 30, 30, 30)
         system.parallel_cycle()
         print(clock.fps())

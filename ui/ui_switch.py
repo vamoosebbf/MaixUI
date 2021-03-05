@@ -16,6 +16,7 @@ class Switch(Widget):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h)
         self.__border_color = (165, 165, 165)
+        self.__border_thickness = 1
         self.__bg_color = (255, 255, 255)
         self.__handle_color = (165, 165, 165)
 
@@ -45,6 +46,12 @@ class Switch(Widget):
                               self.__y, int(self.__w / 2), self.__h, self.__handle_color, fill=True)
         ui.img.draw_string(self.__text_x + self.__x, self.__text_y +
                            self.__y, self.__text, self.__handle_color)
+        # if self.__state == True:
+        #     ui.img.draw_image(image.Image(
+        #         "res/icons/Switch-1.jpg"), self.__x, self.__y, alpha=255)
+        # else:
+        #     ui.img.draw_image(image.Image(
+        #         "res/icons/Switch-2.jpg"), self.__x, self.__y, alpha=255)
 
     def set_state(self, state):
         self.clear()
@@ -75,6 +82,7 @@ if __name__ == '__main__':
 
     # init canvas
     ui.set_bg_color((75, 0, 75))
+    ui.set_bg_img("res/images/bg.jpg")
 
     # create button
     swi = Switch(20, 30, 60, 40)

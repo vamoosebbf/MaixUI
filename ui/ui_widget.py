@@ -26,7 +26,7 @@ class Widget:
 
         self.__eves = {Touch.press: None, Touch.click: None, Touch.idle: None}
         self.__eargs = {Touch.press: None, Touch.click: None, Touch.idle: None}
-        touch.register_touch_event(self.touch_event, None)
+        self.__eve_enable = False
 
     # 将 widget 显示在 Canvas 上
     def draw(self):
@@ -55,6 +55,8 @@ class Widget:
 
     # eve_name: event name, string type
     def register_event(self, eve_name, func, *args):
+        if self.__eve_enable == False:
+            touch.register_touch_event(self.touch_event, None)
         for e in self.__eves.keys():
             if e == eve_name:
                 self.__eves[e] = func
@@ -78,8 +80,8 @@ class Widget:
         self.__bg_color = color
         self.draw()
 
-    def set_bg_img(self, path, padding_left=None, padding_top=None):
-        self.__bg_img = image.Image(path)
+    def set_bg_img(self, img, padding_left=None, padding_top=None):
+        self.__bg_img = img
         w = self.__bg_img.width()
         h = self.__bg_img.height()
 
@@ -94,12 +96,15 @@ class Widget:
             self.__bg_img_padding_top = padding_top
         self.draw()
 
+    # set position and size
     def set_pos_size(self, x, y, w, h):
         self.clear()
         self.__w = w
         self.__h = h
         self.__x = x
         self.__y = y
+        if self.__bg_img:
+            self.set_bg_img(self.__bg_img.resize(w, h))
         self.draw()
 
     def set_border(self, color, thickness):
@@ -107,6 +112,7 @@ class Widget:
         self.__border_thickness = thickness
         self.draw()
 
+    # clear background
     def clear(self):
         ui.clear(self.__x - self.__border_thickness, self.__y - self.__border_thickness,
                  self.__w + self.__border_thickness, self.__h + self.__border_thickness)
@@ -124,10 +130,12 @@ if __name__ == '__main__':
 
     ui.set_bg_color((255, 255, 0))
 
+    img = image.Image(os.getcwd() + "/res/icons/app_camera.bmp")
+    print(img)
     # create widget
     wig = Widget(0, 0, 100, 100)
     wig.set_pos_size(0, 0, 80, 80)
-    wig.set_bg_img(path=os.getcwd() + "/res/icons/app_camera.bmp")
+    wig.set_bg_img(img)
     wig.set_border((255, 255, 255), 1)
     # register event
 
@@ -141,9 +149,9 @@ if __name__ == '__main__':
         wig.set_pos_size(0, 0, 80, 80)
         print("wig idle")
 
-    wig.register_event(Touch.press, on_press)
-    wig.register_event(Touch.idle, on_idle)
-    wig.unregister_event(Touch.idle)
+    # wig.register_event(Touch.press, on_press)
+    # wig.register_event(Touch.idle, on_idle)
+    # wig.unregister_event(Touch.idle)
 
     system.event(0, ui.display)
     clock = time.clock()
@@ -151,7 +159,7 @@ if __name__ == '__main__':
     pos_y = 20
     while True:
         clock.tick()
-        pos_x += 2
-        wig.set_pos_size(pos_x, pos_y, 80, 80)
+        # pos_x += 2
+        # wig.set_pos_size(pos_x, pos_y, 80, 80)
         system.parallel_cycle()
         print(clock.fps())
