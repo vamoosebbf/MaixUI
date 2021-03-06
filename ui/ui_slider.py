@@ -11,19 +11,38 @@ except:
 
 
 class Slider(ProgressBar):
-    def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h)
+    def __init__(self, x, y, w, h, dir=0):
+        super().__init__(x, y, w, h, dir)
         # handle： 触球
         self.__handle_color = (221, 38, 41)
-        self.__handle_w = int(self.__w * 0.05)
-        self.__handle_h = int(self.__h * 0.7)
+        self.__handle_w = 0
+        self.__handle_h = 0
         self.__handle_border_color = None
         self.__handle_border_thickness = 1
 
     def draw(self):
         super().draw()
-        handle_x = int(self.__bar_x + self.__bar_w - self.__handle_w / 2)
-        handle_y = int((self.__h - self.__handle_h) * 0.5)
+        if self.__dir == 0:
+            self.__handle_w = int(self.__h * 0.6)
+            self.__handle_h = self.__handle_w
+            handle_x = int(self.__bar_w)
+            handle_y = int((self.__h - self.__handle_h) * 0.5)
+        elif self.__dir == 1:
+            self.__handle_w = int(self.__h * 0.6)
+            self.__handle_h = self.__handle_w
+            handle_x = int(self.__bar_x - self.__handle_w/2)
+            handle_y = int((self.__h - self.__handle_h) * 0.5)
+        elif self.__dir == 3:
+            self.__handle_w = int(self.__w * 0.6)
+            self.__handle_h = self.__handle_w
+            handle_x = int((self.__w - self.__handle_w) * 0.5)
+            handle_y = int(self.__bar_h)
+        elif self.__dir == 2:
+            self.__handle_w = int(self.__w * 0.6)
+            self.__handle_h = self.__handle_w
+            handle_x = int((self.__w - self.__handle_w) * 0.5)
+            handle_y = int(self.__bar_y - self.__handle_h/2)
+
         ui.img.draw_rectangle(handle_x + self.__x, handle_y + self.__y,
                               self.__handle_w, self.__handle_h, color=self.__handle_color, fill=True)
 
@@ -35,8 +54,8 @@ if __name__ == '__main__':
     ui.set_bg_color((75, 0, 75))
     ui.set_bg_img("res/images/bg.jpg")
     # create button
-    bar = Slider(20, 30, 100, 30)
-    bar.set_bg_color(None)
+    bar = Slider(20, 30, 30, 400, 3)
+    bar.set_bg_color((255, 255, 255))
 
     bar.set_value(100)
 
@@ -59,4 +78,4 @@ if __name__ == '__main__':
         bar.set_value(val)
         lab.set_text(str(bar.__current) + "%")
         system.parallel_cycle()
-        print(clock.fps())
+        # print(clock.fps())

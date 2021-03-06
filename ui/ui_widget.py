@@ -149,17 +149,13 @@ if __name__ == '__main__':
         wig.set_pos_size(0, 0, 80, 80)
         print("wig idle")
 
-    # wig.register_event(Touch.press, on_press)
-    # wig.register_event(Touch.idle, on_idle)
-    # wig.unregister_event(Touch.idle)
-
     system.event(0, ui.display)
     clock = time.clock()
     pos_x = 0
     pos_y = 20
     while True:
         clock.tick()
-        # pos_x += 2
-        # wig.set_pos_size(pos_x, pos_y, 80, 80)
+        pos_x += 2
+        wig.set_pos_size(pos_x, pos_y, 80, 80)
         system.parallel_cycle()
         print(clock.fps())

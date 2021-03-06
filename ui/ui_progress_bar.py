@@ -28,16 +28,16 @@ class ProgressBar(Widget):
         self.__bg_color = (255, 255, 255)
         self.__border_color = None
         self.__border_thickness = 1
+
         self.__bar_color = (0, 200, 255)
         self.__bar_border_color = (0, 0, 0)
         self.__bar_border_thickness = 1
-        self.__bar_x = int(self.__w * 0.025)
-        self.__bar_y = int(self.__h * 0.4)
-        self.__bar_w = int(self.__current / (self.__end -
-                                             self.__start) * self.__w * 0.95)
-        self.__bar_h = int(self.__h * 0.2)
-        self.__dir = dir  # 0: left to right 1: right to left 2: down to up 3: up to down
-
+        self.__bar_x = 0
+        self.__bar_y = 0
+        self.__bar_w = 0
+        self.__bar_h = 0
+        # progressbar dir: 0: left to right 1: right to left 2: down to up 3: up to down
+        self.__dir = dir
         # register press event
         self.register_event(Touch.press, self.on_press)
 
@@ -48,41 +48,54 @@ class ProgressBar(Widget):
 
     def draw(self):
         super().draw()
-
-        # draw border
-        if self.__border_color:
-            ui.img.draw_rectangle(self.__x, self.__y, self.__w, self.__h,
-                                  color=self.__border_color, thickness=self.__border_thickness)
         if self.__dir == 3:
-            self.__bar_w = int(self.__w * 0.2)
+            self.__bar_x = int(self.__w * 0.3)
+            self.__bar_y = int(self.__w * 0.3)
+            self.__bar_w = int(self.__w * 0.4)
             self.__bar_h = int(self.__current / (self.__end -
-                                                 self.__start) * self.__h * 0.95)
-            self.__bar_x = int(self.__w * 0.4)
-            self.__bar_y = int(self.__h * 0.025)
+                                                 self.__start) * (self.__h - self.__bar_x*2))
+            if self.__bar_border_color:
+                ui.img.draw_rectangle(int(self.__x + self.__bar_x),
+                                      int(self.__y + self.__bar_y),
+                                      self.__bar_w,
+                                      int(self.__h - self.__bar_x*2),
+                                      self.__bar_border_color)
         elif self.__dir == 2:
-            self.__bar_w = int(self.__w * 0.2)
+            self.__bar_w = int(self.__w * 0.4)
             self.__bar_h = int(self.__current / (self.__end -
-                                                 self.__start) * self.__h * 0.95)
-            self.__bar_x = int(self.__w * 0.4)
-            self.__bar_y = int(self.__h - self.__bar_h - self.__h * 0.025)
+                                                 self.__start) * (self.__h - self.__bar_x*2))
+            self.__bar_x = int(self.__w * 0.3)
+            self.__bar_y = int(self.__h - self.__bar_h - self.__w * 0.3)
+            if self.__bar_border_color:
+                ui.img.draw_rectangle(int(self.__x + self.__bar_x),
+                                      int(self.__y + self.__bar_x),
+                                      self.__bar_w,
+                                      int(self.__h - self.__bar_x*2),
+                                      self.__bar_border_color)
         elif self.__dir == 1:
             self.__bar_w = int(self.__current / (self.__end -
-                                                 self.__start) * self.__w * 0.95)
-            self.__bar_h = int(self.__h * 0.2)
-            self.__bar_x = int(self.__w - self.__bar_w - self.__w * 0.025)
-            self.__bar_y = int(self.__h * 0.4)
-
-        if self.__dir == 2 or self.__dir == 3:
+                                                 self.__start) * (self.__w - self.__h * 0.3*2))
+            self.__bar_h = int(self.__h * 0.4)
+            self.__bar_x = int(self.__w - self.__bar_w - self.__h * 0.3)
+            self.__bar_y = int(self.__h * 0.3)
             if self.__bar_border_color:
-                ui.img.draw_rectangle(int(self.__x + self.__w * 0.4), int(self.__y + self.__h * 0.025), int(
-                    self.__w * 0.2), int(self.__h * 0.95), self.__bar_border_color)
-
-        if self.__dir == 1 or self.__dir == 0:
+                ui.img.draw_rectangle(self.__x + self.__bar_y, self.__y +
+                                      self.__bar_y,
+                                      int((self.__w - self.__h * 0.3*2)),
+                                      int(self.__h * 0.4),
+                                      self.__bar_border_color)
+        elif self.__dir == 0:
+            self.__bar_x = int(self.__h * 0.3)
+            self.__bar_y = int(self.__h * 0.3)
+            self.__bar_w = int(self.__current / (self.__end -
+                                                 self.__start) * (self.__w - self.__bar_x*2))
+            self.__bar_h = int(self.__h * 0.4)
             if self.__bar_border_color:
-                ui.img.draw_rectangle(int(self.__x + self.__w * 0.025), int(self.__y +
-                                                                            self.__h * 0.4),
-                                      int(self.__w * 0.95), int(self.__h * 0.2), self.__bar_border_color)
-
+                ui.img.draw_rectangle(self.__x + self.__bar_x, self.__y +
+                                      self.__bar_y,
+                                      int(self.__w - self.__bar_x * 2),
+                                      int(self.__h * 0.4),
+                                      self.__bar_border_color)
         # draw bar
         ui.img.draw_rectangle(self.__bar_x + self.__x, self.__bar_y +
                               self.__y, self.__bar_w, self.__bar_h, self.__bar_color, fill=True)
@@ -90,14 +103,10 @@ class ProgressBar(Widget):
     def set_range(self, start, end):
         self.__start = start
         self.__end = end
-        self.__bar_w = int(self.__current / (self.__end -
-                                             self.__start) * self.__w * 0.95)
 
     def set_value(self, val):
         self.clear()
         self.__current = val
-        self.__bar_w = int(self.__current / (self.__end -
-                                             self.__start) * self.__w * 0.95)
         self.draw()
 
     def set_bg_border(self, color, thickness):
@@ -126,7 +135,7 @@ if __name__ == '__main__':
     # create button
     bar = ProgressBar(40, 30, 400, 20, 1)
     bar.set_bg_color((255, 255, 255))
-    bar1 = ProgressBar(40, 70, 400, 20, 0)
+    bar1 = ProgressBar(40, 280, 400, 20, 0)
     bar1.set_bg_color((255, 255, 255))
     bar2 = ProgressBar(40, 100, 400, 20, 1)
     bar2.set_bg_color((255, 255, 255))
