@@ -12,9 +12,8 @@ except ImportError:
     from driver.touch import touch
     from lib.core import system
 
+
 # 进度条
-
-
 class ProgressBar(Widget):
     def __init__(self, x, y, w, h, dir=0):
         super().__init__(x, y, w, h)
@@ -36,14 +35,30 @@ class ProgressBar(Widget):
         self.__bar_y = 0
         self.__bar_w = 0
         self.__bar_h = 0
-        # progressbar dir: 0: left to right 1: right to left 2: down to up 3: up to down
+        # progressbar dir: 0: left to right 1: right to left 2: low to high 3: high to low
         self.__dir = dir
         # register press event
         self.register_event(Touch.press, self.on_press)
 
     def on_press(self):
-        x = touch.points[1][0]
-        current = int((x - self.__x) / self.__w * (self.__end - self.__start))
+        if self.__dir == 0:
+            x = touch.points[1][0]
+            current = int((x - self.__x) / self.__w *
+                          (self.__end - self.__start))
+        elif self.__dir == 1:
+            x = touch.points[1][0]
+            current = int((self.__x + self.__w - x) / self.__w *
+                          (self.__end - self.__start))
+        elif self.__dir == 2:
+            y = touch.points[1][1]
+            current = int((self.__h - y + self.__y) / self.__h *
+                          (self.__end - self.__start))
+            print(current)
+        elif self.__dir == 3:
+            y = touch.points[1][1]
+            current = int((y - self.__y) / self.__h *
+                          (self.__end - self.__start))
+
         self.set_value(current)
 
     def draw(self):
@@ -132,24 +147,17 @@ if __name__ == '__main__':
     ui.set_bg_color((75, 0, 75))
     ui.set_bg_img("res/images/bg.jpg")
 
-    # create button
-    bar = ProgressBar(40, 30, 400, 20, 1)
-    bar.set_bg_color((255, 255, 255))
-    bar1 = ProgressBar(40, 280, 400, 20, 0)
+    # # create button
+    bar1 = ProgressBar(40, 280, 400, 30, 0)
     bar1.set_bg_color((255, 255, 255))
-    bar2 = ProgressBar(40, 100, 400, 20, 1)
+    bar2 = ProgressBar(40, 240, 400, 30, 1)
     bar2.set_bg_color((255, 255, 255))
-    bar3 = ProgressBar(440, 20, 20, 200, 2)
+    bar3 = ProgressBar(440, 20, 30, 200, 2)
     bar3.set_bg_color((255, 255, 255))
-    bar4 = ProgressBar(40, 170, 400, 20, 0)
-    bar4.set_bg_color((255, 255, 255))
-    bar5 = ProgressBar(40, 210, 400, 20, 1)
-    bar5.set_bg_color((255, 255, 255))
-    bar6 = ProgressBar(40, 20, 20, 200, 3)
+    bar6 = ProgressBar(40, 20, 30, 200, 3)
     bar6.set_bg_color((255, 255, 255))
 
-    bar.set_value(100)
-    # system.event(1, ui.display)
+    system.event(0, ui.display)
     clock = time.clock()
     val = 1
     dir = True
@@ -163,13 +171,9 @@ if __name__ == '__main__':
             dir = False
         if val == 0:
             dir = True
-        bar.set_value(val)
         bar1.set_value(val)
         bar2.set_value(val)
         bar3.set_value(val)
-        bar4.set_value(val)
-        bar5.set_value(val)
         bar6.set_value(val)
-        ui.display()
         system.parallel_cycle()
         print(clock.fps())

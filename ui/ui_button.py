@@ -52,11 +52,13 @@ if __name__ == '__main__':
 
     # create button
     btn3 = Button(400, 164, 80, 80)
-    btn3.set_bg_img(os.getcwd() + "/res/icons/app_explorer.bmp")
+    img = image.Image(os.getcwd() + "/res/icons/app_explorer.bmp")
+    btn3.set_bg_img(img)
 
     # create button
     btn4 = Button(400, 246, 80, 80)
-    btn4.set_bg_img(os.getcwd() + "/res/icons/app_system_info.bmp")
+    img = image.Image(os.getcwd() + "/res/icons/app_system_info.bmp")
+    btn4.set_bg_img(img)
 
     system.event(0, ui.display)
     clock = time.clock()

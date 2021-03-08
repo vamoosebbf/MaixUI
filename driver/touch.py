@@ -62,7 +62,7 @@ class TouchLow:
 
 class Touch:
 
-    click, idle, press, release = "Touch.click", "Touch.idle", "Touch.press", "Touch.release"
+    click, idle, press, drag = "Touch.click", "Touch.idle", "Touch.press", "Touch.drag"
 
     def __init__(self, i2c, w, h, cycle=1000, irq_pin=33):
         self.cycle = cycle
@@ -89,11 +89,14 @@ class Touch:
     def release_check(self):
         # timeout return ilde.
         if (time.ticks_ms() > self.last_time + self.cycle) and (self.state != Touch.idle):
-            if self.state == Touch.click:
+            if self.state == Touch.click or self.state == Touch.drag:
                 self.state = Touch.idle
                 self.points = [(0, 0, 0), (0, 0, 0)]
             if self.state == Touch.press:
-                self.state = Touch.click
+                if self.points[1][0:2] == self.points[0][0:2]:
+                    self.state = Touch.click
+                else:
+                    self.state = Touch.drag
             self._events_cycle()  # 通知所有已注册 touch event 控件
 
     # 按压检测, 中断触发
@@ -139,4 +142,4 @@ if __name__ == '__main__':
         # pos_x += 2
         # wig.set_pos_size(pos_x, pos_y, 80, 80)
         system.parallel_cycle()
-        print(clock.fps())
+        # print(clock.fps())

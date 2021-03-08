@@ -24,8 +24,10 @@ class Widget:
         self.__bg_img_padding_left = None
         self.__bg_img_padding_top = None
 
-        self.__eves = {Touch.press: None, Touch.click: None, Touch.idle: None}
-        self.__eargs = {Touch.press: None, Touch.click: None, Touch.idle: None}
+        self.__eves = {Touch.press: None, Touch.click: None,
+                       Touch.idle: None, Touch.drag: None}
+        self.__eargs = {Touch.press: None, Touch.click: None,
+                        Touch.idle: None, Touch.drag: None}
         self.__eve_enable = False
 
     # 将 widget 显示在 Canvas 上
@@ -57,11 +59,12 @@ class Widget:
     def register_event(self, eve_name, func, *args):
         if self.__eve_enable == False:
             touch.register_touch_event(self.touch_event, None)
+            self.__eve_enable = True
         for e in self.__eves.keys():
             if e == eve_name:
                 self.__eves[e] = func
                 self.__eargs[e] = args
-        return
+                return
         print("event name error, please use follow values:")
         for i in self.__eves.keys():
             print(i)
@@ -71,7 +74,7 @@ class Widget:
             if e == eve_name:
                 self.__eves[e] = None
                 self.__eargs[e] = None
-        return
+                return
         print("event name error, please use follow values:")
         for i in self.__eves.keys():
             print(i)
@@ -137,7 +140,6 @@ if __name__ == '__main__':
     wig.set_pos_size(0, 0, 80, 80)
     wig.set_bg_img(img)
     wig.set_border((255, 255, 255), 1)
-    # register event
 
     def on_press():
         wig.set_bg_color((0, 0, 255))
@@ -149,6 +151,12 @@ if __name__ == '__main__':
         wig.set_pos_size(0, 0, 80, 80)
         print("wig idle")
 
+    def on_drag():
+        wig.set_bg_color((255, 0, 0))
+        wig.set_pos_size(0, 0, 80, 80)
+        print("wig idle")
+
+    wig.register_event(Touch.drag, on_drag)
     system.event(0, ui.display)
     clock = time.clock()
     pos_x = 0

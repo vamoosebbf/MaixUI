@@ -17,7 +17,6 @@ class List(Widget):
 
     def add_items(self, text):
         lab = Label(current_x, current_y, self.__w, self.__h/(len(self.items_list))
-        self.items_list.append(lab)
 
     def draw(self):
         super().draw()
