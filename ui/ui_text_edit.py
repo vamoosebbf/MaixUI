@@ -12,10 +12,10 @@ except:
 
 class TextEdit(Widget):
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__(x, y, w, h)
         # text
-        self._text = ""
+        self._text = None
         self._text_color = (255, 255, 255)
         self._text_x = 0
         self._text_y = 0
@@ -40,6 +40,20 @@ class TextEdit(Widget):
         self.draw()
 
     def text_draw(self):
+        str_len = len(self._text) * self._text_scale * 6
+        str_el = int((self.__w * 0.9) / (6*self._text_scale))
+        # one page can
+        self._max_line_p = int(
+            (self.__h - self._padding*2) // (self._text_scale * 10 + self._text_lspacing))
+        if str_el <=0:
+            return
+        tmp = len(self._text)/str_el - self._max_line_p
+        if tmp < 0:
+            tmp = 0
+        elif tmp % 1 > 0:
+            tmp += 1
+        self._text_max_oft = int(tmp) * str_el
+        
         # length of text which will be draw , 6： default char width
         str_len = len(self._text[self._text_oft:])
         str_h = self._text_scale * 10  # 10: default char height
@@ -53,7 +67,7 @@ class TextEdit(Widget):
             if text_y + self._text_scale * 10 > self.__h:
                 return
             tmp = index * str_el + self._text_oft
-            ui.img.draw_string(text_x + self.__x, text_y + self.__y,
+            ui.canvas.draw_string(text_x + self.__x, text_y + self.__y,
                                self._text[tmp:tmp + str_el],
                                scale=self._text_scale,
                                color=self._text_color)
@@ -61,7 +75,7 @@ class TextEdit(Widget):
 
     def draw(self):
         super().draw()
-        if self._text:
+        if self._text or (self.__w*self.__h)!=0:
             self.text_draw()
 
     def get_text(self):
@@ -73,17 +87,6 @@ class TextEdit(Widget):
         self._text_scale = scale
         if lspacing:
             self._text_lspacing = lspacing
-        str_len = len(self._text) * self._text_scale * 6
-        str_el = int((self.__w * 0.9) / (6*self._text_scale))
-        # one page can
-        self._max_line_p = int(
-            (self.__h - self._padding*2) // (self._text_scale * 10 + self._text_lspacing))
-        tmp = len(self._text)/str_el - self._max_line_p
-        if tmp < 0:
-            tmp = 0
-        elif tmp % 1 > 0:
-            tmp += 1
-        self._text_max_oft = int(tmp) * str_el
         self.clear()
         self.draw()
 
@@ -98,27 +101,19 @@ if __name__ == '__main__':
     import time
 
     # init canvas
-    ui.set_bg_color((75, 0, 75))
-    ui.set_bg_img("res/images/bg.jpg")
+    img = image.Image("res/images/bg.jpg")
+    ui.set_bg_img(img)
 
     # create button
-    lab = TextEdit(20, 20, 280, 180)
+    lab = TextEdit()
     lab.set_bg_color(None)
     lab.set_border((255, 255, 255), 2)
+    lab.set_text("MaixPy is to port Micropython to K210 (a 64-bit dual-core RISC-V CPU with hardware FPU, convolution accelerator, FFT, Sha256) is a project that supports the normal operation of the MCU and integrates hardware acceleration. AI machine vision and microphone array, 1TOPS computing power core module is less than ￥50, in order to quickly develop intelligent applications in the field of AIOT with extremely low cost and practical size.", scale=2, lspacing=4)
+    lab.set_pos_size(10, 10, 180, 180)
 
     system.event(0, ui.display)
     clock = time.clock()
-    val = 1
-    lab.set_text("MaixPy is to port Micropython to K210\
-                 (a 64-bit dual-core RISC-V CPU with hardware FPU, \
-                 convolution accelerator, FFT, Sha256) is a project\
-                 that supports the normal operation of the MCU\
-                 and integrates hardware acceleration. AI machine\
-                 vision and microphone array, 1TOPS computing power\
-                 core module is less than ￥50, in order to quickly\
-                 develop intelligent applications in the field of AIOT with\
-                 extremely low cost and practical size.", scale=2, lspacing=4)
     while True:
         clock.tick()
         system.parallel_cycle()
-        # print(clock.fps())
+        print(clock.fps())

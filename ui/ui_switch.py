@@ -42,15 +42,15 @@ class Switch(Widget):
 
     def draw(self):
         super().draw()
-        ui.img.draw_rectangle(self.__handle_x + self.__x, self.__handle_y +
+        ui.canvas.draw_rectangle(self.__handle_x + self.__x, self.__handle_y +
                               self.__y, int(self.__w / 2), self.__h, self.__handle_color, fill=True)
-        ui.img.draw_string(self.__text_x + self.__x, self.__text_y +
+        ui.canvas.draw_string(self.__text_x + self.__x, self.__text_y +
                            self.__y, self.__text, self.__handle_color)
         # if self.__state == True:
-        #     ui.img.draw_image(image.Image(
+        #     ui.canvas.draw_image(image.Image(
         #         "res/icons/Switch-1.jpg"), self.__x, self.__y, alpha=255)
         # else:
-        #     ui.img.draw_image(image.Image(
+        #     ui.canvas.draw_image(image.Image(
         #         "res/icons/Switch-2.jpg"), self.__x, self.__y, alpha=255)
 
     def set_state(self, state):

@@ -35,7 +35,7 @@ class ScrollBar(Widget):
         self.__thumb_y = 0
         self.__thumb_w = 0
         self.__thumb_h = 0
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         # ScrollBar dir: 0: left to right 1: right to left 2: down to up 3: up to down
         self.__dir = dir
 
@@ -51,7 +51,7 @@ class ScrollBar(Widget):
         super().draw()
 
         # draw bar
-        ui.img.draw_rectangle(self.__bar_x + self.__x, self.__bar_y +
+        ui.canvas.draw_rectangle(self.__bar_x + self.__x, self.__bar_y +
                               self.__y, self.__bar_w, self.__bar_h, self.__bar_color, fill=True)
 
 

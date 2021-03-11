@@ -29,9 +29,9 @@ class CheckBox(Button):
         handle_w = self._text_scale * 6 * 2  # 正方形选中框的大小为单个 char 的两倍
         x = self.__x + self._text_x - handle_w - 5
         y = self.__y + int((self.__h - handle_w) / 2)
-        ui.img.draw_rectangle(x, y, handle_w, handle_w,
+        ui.canvas.draw_rectangle(x, y, handle_w, handle_w,
                               self.__rect_color, fill=True)
-        ui.img.draw_rectangle(x, y, handle_w, handle_w,
+        ui.canvas.draw_rectangle(x, y, handle_w, handle_w,
                               self.__rect_border_color)
 
     def set_rect_color(self, color):

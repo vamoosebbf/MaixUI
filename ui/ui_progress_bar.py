@@ -70,7 +70,7 @@ class ProgressBar(Widget):
             self.__bar_h = int(self.__current / (self.__end -
                                                  self.__start) * (self.__h - self.__bar_x*2))
             if self.__bar_border_color:
-                ui.img.draw_rectangle(int(self.__x + self.__bar_x),
+                ui.canvas.draw_rectangle(int(self.__x + self.__bar_x),
                                       int(self.__y + self.__bar_y),
                                       self.__bar_w,
                                       int(self.__h - self.__bar_x*2),
@@ -82,7 +82,7 @@ class ProgressBar(Widget):
             self.__bar_x = int(self.__w * 0.3)
             self.__bar_y = int(self.__h - self.__bar_h - self.__w * 0.3)
             if self.__bar_border_color:
-                ui.img.draw_rectangle(int(self.__x + self.__bar_x),
+                ui.canvas.draw_rectangle(int(self.__x + self.__bar_x),
                                       int(self.__y + self.__bar_x),
                                       self.__bar_w,
                                       int(self.__h - self.__bar_x*2),
@@ -94,7 +94,7 @@ class ProgressBar(Widget):
             self.__bar_x = int(self.__w - self.__bar_w - self.__h * 0.3)
             self.__bar_y = int(self.__h * 0.3)
             if self.__bar_border_color:
-                ui.img.draw_rectangle(self.__x + self.__bar_y, self.__y +
+                ui.canvas.draw_rectangle(self.__x + self.__bar_y, self.__y +
                                       self.__bar_y,
                                       int((self.__w - self.__h * 0.3*2)),
                                       int(self.__h * 0.4),
@@ -106,13 +106,13 @@ class ProgressBar(Widget):
                                                  self.__start) * (self.__w - self.__bar_x*2))
             self.__bar_h = int(self.__h * 0.4)
             if self.__bar_border_color:
-                ui.img.draw_rectangle(self.__x + self.__bar_x, self.__y +
+                ui.canvas.draw_rectangle(self.__x + self.__bar_x, self.__y +
                                       self.__bar_y,
                                       int(self.__w - self.__bar_x * 2),
                                       int(self.__h * 0.4),
                                       self.__bar_border_color)
         # draw bar
-        ui.img.draw_rectangle(self.__bar_x + self.__x, self.__bar_y +
+        ui.canvas.draw_rectangle(self.__bar_x + self.__x, self.__bar_y +
                               self.__y, self.__bar_w, self.__bar_h, self.__bar_color, fill=True)
 
     def set_range(self, start, end):

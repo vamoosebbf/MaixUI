@@ -43,7 +43,7 @@ class Slider(ProgressBar):
             handle_x = int((self.__w - self.__handle_w) * 0.5)
             handle_y = int(self.__bar_y - self.__handle_h/2)
 
-        ui.img.draw_rectangle(handle_x + self.__x, handle_y + self.__y,
+        ui.canvas.draw_rectangle(handle_x + self.__x, handle_y + self.__y,
                               self.__handle_w, self.__handle_h, color=self.__handle_color, fill=True)
 
 

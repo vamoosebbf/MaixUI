@@ -37,11 +37,11 @@ class ImageBox(Widget):
         if padding_top:
             y = padding_top
         if self._bg_color:
-            ui.img.draw_rectangle(self.__x, self.__y,
+            ui.canvas.draw_rectangle(self.__x, self.__y,
                                   self.__w, self.__h, fill=True)
-        ui.img.draw_image(self.__panel, self.__x + x, self.__y + y)
+        ui.canvas.draw_image(self.__panel, self.__x + x, self.__y + y)
         if self.__title != "":
-            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
+            ui.canvas.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
                                self.__title, self.__title_color, scale=self.__title_scale)
 
     def set_title(self, title, color=(255, 255, 255), scale=1, padding_left=None, padding_top=5):
@@ -56,16 +56,16 @@ class ImageBox(Widget):
         if padding_top:
             self.__title_y = padding_top
         if self.__title != "":
-            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
+            ui.canvas.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
                                self.__title, self.__title_color, scale=self.__title_scale)
 
     def set_bg_color(self, color):
         self._bg_color = color
         if self._bg_color:
-            ui.img.draw_rectangle(self.__x, self.__y,
+            ui.canvas.draw_rectangle(self.__x, self.__y,
                                   self.__w, self.__h, fill=True)
         if self.__title != "":
-            ui.img.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
+            ui.canvas.draw_string(self.__title_x + self.__x, self.__title_y + self.__y,
                                self.__title, self.__title_color, scale=self.__title_scale)
 
 

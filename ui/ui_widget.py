@@ -34,13 +34,13 @@ class Widget:
     def draw(self):
         # fill background
         if self.__bg_color:
-            ui.img.draw_rectangle(
+            ui.canvas.draw_rectangle(
                 self.__x, self.__y, self.__w, self.__h, color=self.__bg_color, fill=True)
         if self.__bg_img:
-            ui.img.draw_image(self.__bg_img, self.__x + self.__bg_img_padding_left,
+            ui.canvas.draw_image(self.__bg_img, self.__x + self.__bg_img_padding_left,
                               self.__y + self.__bg_img_padding_top, alpha=255)
         if self.__border_color:
-            ui.img.draw_rectangle(self.__x, self.__y, self.__w, self.__h,
+            ui.canvas.draw_rectangle(self.__x, self.__y, self.__w, self.__h,
                                   self.__border_color, thickness=self.__border_thickness)
 
     def _point_in_widget(self, point):
