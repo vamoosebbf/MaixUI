@@ -27,7 +27,9 @@ class Canvas():
         self.__bg_img = None
         self.__widgets = {}
         self.__bg_color = (255, 255, 255)
-    
+        self.canvas.draw_rectangle(0, 0, self.__w, self.__h,
+                                self.__bg_color, fill=True)  # background color
+
     def add_widget(self, widget):
         self.__widgets[widget] = widget
 
@@ -53,7 +55,7 @@ class Canvas():
         if self.__bg_color:
             self.canvas.draw_rectangle(
                 x, y, w, h, color=self.__bg_color, fill=True)
-        if self.__bg_img:
+        elif self.__bg_img:
             try:
                 self.canvas.draw_image(self.__bg_img.copy(
                     (x, y, w, h), copy_to_fb=False), x, y)

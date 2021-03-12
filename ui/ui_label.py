@@ -26,7 +26,6 @@ class Label(Widget):
             str_w = len(self._text) * self._text_scale * \
                 6  # 6： default char width
             str_h = self._text_scale * 10  # 10: default char height
-            print(str_w)
             # The character width is larger than the Widget width, discard the excess
             if str_w > self.__w:
                 text_max_num = self.__w // (self._text_scale * 6)

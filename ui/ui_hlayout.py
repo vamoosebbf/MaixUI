@@ -13,29 +13,33 @@ except:
 class HLayout(Widget):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h)
-        self.items_list = []
-        self.__max_item_p = 0
-        self.__item_h = 0
-        self.__Item_w = 0
+        self.widgets_list = []
+        self.__max_widget = 0
+        self.__widget_h = 0
+        self.__widget_w = 0
+        self.__widget_spc = 0
 
-    def add_items(self, wig):
-        self.items_list.append(wig)
+    def add_widgets(self, wig):
+        self.widgets_list.append(wig)
         self.draw()
 
-    def set_item_size(self, w, h):
-        self.__item_w = w
-        self.__item_h = h
+    def set_widget_size(self, w, h):
+        self.__widget_w = w
+        self.__widget_h = h
+        self.draw()
+    
+    def set_widget_spc(self, spc):
+        self.__widget_spc = spc
         self.draw()
 
     def draw(self):
         super().draw()
-        item_x = 0
-        item_y = 0
-        self.__max_item_p = self.__h//self.__item_h
-        for item in self.items_list[0:self.__max_item_p]:
-            item.set_pos_size(self.__x + item_x, self.__y +
-                              item_y, self.__item_w, self.__item_h)
-            item_x += self.__item_w + 4
+        widget_x = 0
+        widget_y = 0
+        self.__max_widget = self.__w//(self.__widget_w + self.__widget_spc)
+        for widget in self.widgets_list[0:self.__max_widget]:
+            widget.set_pos_size(self.__x + widget_x, self.__y + widget_y, self.__widget_w, self.__widget_h)
+            widget_x += self.__widget_w + self.__widget_spc
 
 
 if __name__ == '__main__':
@@ -50,18 +54,27 @@ if __name__ == '__main__':
     ui.set_bg_img(img)
     
     li = HLayout(10, 10, 200, 300)
-    li.set_item_size(60, 30)
+    li.set_widget_size(100, 30)
 
     lab = Label()
     lab.set_text("apple", color=(255, 0, 0), scale=2)
-    li.add_items(lab)
+    lab.set_border((255, 255, 0), 2)
+    li.add_widgets(lab)
 
     lab1 = Label()
     lab1.set_text("banana", color=(255, 0, 0), scale=2)
-    li.add_items(lab1)
+    lab1.set_border((255, 0, 255), 2)
+    li.add_widgets(lab1)
 
     te1 = TextEdit()
-    te1.set_text("texttext", color=(0,255,0), scale=2)
-    li.add_items(TextEdit)
+    te1.set_text("text", color=(0,255,0), scale=2)
+    te1.set_border((255, 0, 255), 2)
+    li.add_widgets(te1)
+
+    te2 = TextEdit()
+    te2.set_text("text2", color=(0,255,0), scale=2)
+    te2.set_border((255, 0, 255), 2) 
+    li.add_widgets(te2)
+
     while True:
         ui.display()

@@ -119,9 +119,9 @@ class Touch:
     def register_touch_event(self, func, *args):
         self.events.append([func, args])
 
-    def unregister_touch_event(self, func, *args):
+    def unregister_touch_event(self, func):
         for i in self.events:
-            if i == [func, args]:
+            if i[0] == func:
                 self.events.remove(i)
 
 
@@ -133,7 +133,8 @@ if __name__ == '__main__':
         print(s)
     s = "touch it"
     a = 1
-    # touch.register_touch_event(on_touch, s, a)
+    touch.register_touch_event(on_touch, s, a)
+    touch.unregister_touch_event(on_touch)
     clock = time.clock()
     pos_x = 0
     pos_y = 20

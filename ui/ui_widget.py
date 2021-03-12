@@ -29,6 +29,7 @@ class Widget:
         self.__eargs = {Touch.press: None, Touch.click: None,
                         Touch.idle: None, Touch.drag: None}
         self.__eve_enable = False
+        setattr(self, "touch_event", self.touch_event_)
 
     # 将 widget 显示在 Canvas 上
     def draw(self):
@@ -50,7 +51,7 @@ class Widget:
             return True
         return False
 
-    def touch_event(self, *args):
+    def touch_event_(self, *args):
         if self._point_in_widget(touch.points[1]) and self.__eves[touch.state] != None:
             self.__eves[touch.state](
                 self.__eargs[touch.state]) if self.__eargs[touch.state] else self.__eves[touch.state]()
@@ -65,6 +66,7 @@ class Widget:
                 self.__eves[e] = func
                 self.__eargs[e] = args
                 return
+
         print("event name error, please use follow values:")
         for i in self.__eves.keys():
             print(i)
@@ -74,7 +76,12 @@ class Widget:
             if e == eve_name:
                 self.__eves[e] = None
                 self.__eargs[e] = None
+                if self.__eve_enable and self.__eves == {Touch.press: None, Touch.click: None,
+                       Touch.idle: None, Touch.drag: None}:
+                        touch.unregister_touch_event(self.touch_event)
+                        self.__eve_enable = False
                 return
+            
         print("event name error, please use follow values:")
         for i in self.__eves.keys():
             print(i)
@@ -134,7 +141,6 @@ if __name__ == '__main__':
     ui.set_bg_color((255, 255, 0))
 
     img = image.Image(os.getcwd() + "/res/icons/app_camera.bmp")
-    print(img)
     # create widget
     wig = Widget(0, 0, 100, 100)
     wig.set_pos_size(0, 0, 80, 80)
@@ -146,24 +152,12 @@ if __name__ == '__main__':
         wig.set_pos_size(0, 0, 100, 100)
         print("wig press")
 
-    def on_idle():
-        wig.set_bg_color((255, 0, 0))
-        wig.set_pos_size(0, 0, 80, 80)
-        print("wig idle")
 
-    def on_drag():
-        wig.set_bg_color((255, 0, 0))
-        wig.set_pos_size(0, 0, 80, 80)
-        print("wig idle")
-
-    wig.register_event(Touch.drag, on_drag)
+    wig.register_event(Touch.press, on_press)
+    wig.unregister_event(Touch.press)
     system.event(0, ui.display)
     clock = time.clock()
-    pos_x = 0
-    pos_y = 20
     while True:
         clock.tick()
-        pos_x += 2
-        wig.set_pos_size(pos_x, pos_y, 80, 80)
         system.parallel_cycle()
-        print(clock.fps())
+        # print(clock.fps())

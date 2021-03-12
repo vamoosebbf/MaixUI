@@ -47,6 +47,7 @@ class TextEdit(Widget):
             (self.__h - self._padding*2) // (self._text_scale * 10 + self._text_lspacing))
         if str_el <=0:
             return
+
         tmp = len(self._text)/str_el - self._max_line_p
         if tmp < 0:
             tmp = 0
@@ -60,6 +61,7 @@ class TextEdit(Widget):
 
         # char nums of every line
         str_el = int(self.__w * 0.9 / (6*self._text_scale))
+        self._padding = self.__w * 0.05
         text_x = int(self._padding)
         text_y = int(self._padding)
         # 将可以填满的行数写完

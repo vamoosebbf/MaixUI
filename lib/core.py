@@ -45,15 +45,13 @@ class agent:
 
     # 顺序执行所有 event
     def parallel_cycle(self):
-        funcs = []
-        for pos in range(len(self.msg)):  # maybe use map
-            obj = self.msg[pos]
-            if (self.get_ms() >= obj[0]):
-                self.call(obj, pos)
-                break
-        #         funcs.append([obj, pos])
-        # for func in funcs:
-        #     self.call(func[0], func[1])
+        l = len(self.msg)
+        if l > 0:
+            for pos in range(l):  # maybe use map
+                obj = self.msg[pos]
+                if (self.get_ms() >= obj[0]):
+                    self.call(obj, pos)
+                    break
 
 
 system = agent()
