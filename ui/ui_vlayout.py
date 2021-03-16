@@ -28,6 +28,7 @@ class VLayout(Widget):
         self.__widget_h = h
         self.draw()
 
+    # set widget spacing
     def set_widget_spc(self, spc):
         self._widget_spc = spc
         self.draw()

@@ -23,6 +23,7 @@ class Widget:
         self.__bg_img = None
         self.__bg_img_padding_left = None
         self.__bg_img_padding_top = None
+        self.__aplpha = True
 
         self.__eves = {Touch.press: None, Touch.click: None,
                        Touch.idle: None, Touch.drag: None}
@@ -125,7 +126,7 @@ class Widget:
     # clear background
     def clear(self):
         ui.clear(self.__x - self.__border_thickness, self.__y - self.__border_thickness,
-                 self.__w + self.__border_thickness, self.__h + self.__border_thickness)
+                self.__w + self.__border_thickness, self.__h + self.__border_thickness)
 
 
 if __name__ == '__main__':
@@ -152,12 +153,14 @@ if __name__ == '__main__':
         wig.set_pos_size(0, 0, 100, 100)
         print("wig press")
 
-
     wig.register_event(Touch.press, on_press)
     wig.unregister_event(Touch.press)
     system.event(0, ui.display)
     clock = time.clock()
+    pos_x = 0
     while True:
         clock.tick()
+        pos_x+=1
+        wig.set_pos_size(pos_x, 10, 100, 100)
         system.parallel_cycle()
         # print(clock.fps())

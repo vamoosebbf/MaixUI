@@ -42,6 +42,7 @@ class TextEdit(Widget):
     def text_draw(self):
         str_len = len(self._text) * self._text_scale * 6
         str_el = int((self.__w * 0.9) / (6*self._text_scale))
+
         # one page can
         self._max_line_p = int(
             (self.__h - self._padding*2) // (self._text_scale * 10 + self._text_lspacing))
@@ -64,6 +65,7 @@ class TextEdit(Widget):
         self._padding = self.__w * 0.05
         text_x = int(self._padding)
         text_y = int(self._padding)
+        
         # 将可以填满的行数写完
         for index in range(self._max_line_p):
             if text_y + self._text_scale * 10 > self.__h:

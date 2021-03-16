@@ -25,16 +25,9 @@ class Canvas():
         self.__h = lcd.height()
         self.canvas = image.Image(size=(self.__w, self.__h))
         self.__bg_img = None
-        self.__widgets = {}
         self.__bg_color = (255, 255, 255)
         self.canvas.draw_rectangle(0, 0, self.__w, self.__h,
                                 self.__bg_color, fill=True)  # background color
-
-    def add_widget(self, widget):
-        self.__widgets[widget] = widget
-
-    def remove_widget(self, widget):
-        del self.__widgets[widget]
 
     def set_bg_color(self, color):
         self.__bg_color = color
