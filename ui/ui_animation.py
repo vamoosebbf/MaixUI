@@ -127,8 +127,7 @@ if __name__ == '__main__':
         ani3.set_duration(30)
         ani3.set_key_value_at(0.2, random.randint(0, 480), random.randint(0, 300), 10, 10)
         ani3.set_key_value_at(0.5, random.randint(0, 480), random.randint(0, 300), 10, 10)
-        ani3.set_key_value_at(1, start_x, start_y, 10, 10)
-                           
+        ani3.set_key_value_at(1, start_x, start_y, 10, 10)           
         ani3.start()
 
     system.event(0, ui.display)

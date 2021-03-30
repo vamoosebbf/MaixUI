@@ -54,18 +54,18 @@ class Widget:
 
     def touch_event_(self, *args):
         if self._point_in_widget(touch.points[1]) and self.__eves[touch.state] != None:
-            self.__eves[touch.state](
-                self.__eargs[touch.state]) if self.__eargs[touch.state] else self.__eves[touch.state]()
+            self.__eves[touch.state](self.__eargs[touch.state]) if self.__eargs[touch.state] else self.__eves[touch.state]()
 
     # eve_name: event name, string type
     def register_event(self, eve_name, func, *args):
-        if self.__eve_enable == False:
-            touch.register_touch_event(self.touch_event, None)
-            self.__eve_enable = True
         for e in self.__eves.keys():
             if e == eve_name:
                 self.__eves[e] = func
                 self.__eargs[e] = args
+                if self.__eve_enable == False:
+                    print(self, "register touch event")
+                    touch.register_touch_event(self.touch_event, None)
+                    self.__eve_enable = True
                 return
 
         print("event name error, please use follow values:")
@@ -148,13 +148,14 @@ if __name__ == '__main__':
     wig.set_bg_img(img)
     wig.set_border((255, 255, 255), 1)
 
-    def on_press():
+    def on_press(wig):
+        wig=wig[0]
         wig.set_bg_color((0, 0, 255))
         wig.set_pos_size(0, 0, 100, 100)
         print("wig press")
 
-    wig.register_event(Touch.press, on_press)
-    wig.unregister_event(Touch.press)
+    wig.register_event(Touch.click, on_press, wig)
+    # wig.unregister_event(Touch.press)
     system.event(0, ui.display)
     clock = time.clock()
     pos_x = 0

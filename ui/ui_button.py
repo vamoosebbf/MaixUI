@@ -67,6 +67,6 @@ if __name__ == '__main__':
     while True:
         clock.tick()
         pos_x += 2
-        btn.set_pos_size(pos_x, pos_y, pos_x, pos_y)
+        # btn.set_pos_size(pos_x, pos_y, pos_x, pos_y)
         system.parallel_cycle()
-        print(clock.fps())
+        # print(clock.fps())
