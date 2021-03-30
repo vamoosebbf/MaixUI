@@ -133,7 +133,6 @@ class app:
 
         #print(value)
         if app.loading or app.loop > 20:
-
             ui.canvas.draw_string(200 - int(value) * 2, 68 + (int(value) % 8) * 2, "A",
                                 color=(64, 64, 64), scale=8, mono_space=0)
             ui.canvas.draw_string(200 - int(value), 72 + (int(value) % 8), "A",

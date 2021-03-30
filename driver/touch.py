@@ -78,9 +78,10 @@ class Touch:
 
         # 按压检测（中断）
         self.events = []
-        fm.register(irq_pin, fm.fpioa.GPIOHS2, force=True)
-        key = GPIO(GPIO.GPIOHS2, GPIO.IN, GPIO.PULL_DOWN)
-        key.irq(self.press_check, GPIO.IRQ_FALLING, GPIO.WAKEUP_NOT_SUPPORT, 7)
+        setattr(self, "press_check_", self.press_check)
+        fm.register(irq_pin, fm.fpioa.GPIOHS28, force=True)
+        key = GPIO(GPIO.GPIOHS28, GPIO.IN, GPIO.PULL_DOWN)
+        key.irq(self.press_check_, GPIO.IRQ_FALLING, GPIO.WAKEUP_NOT_SUPPORT, 7)
 
         # 添加松手检测（轮询）
         system.event(20, self.release_check)

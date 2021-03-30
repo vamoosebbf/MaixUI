@@ -13,13 +13,17 @@ except:
     from ui.ui_animation import Animation
     from lib.core import system
 
+import math
 class LoadPage:
     def __init__(self):
+        self.loop = 0
         ui.set_bg_img(self.create_bg_img())
-        self.draw_anim()
+        setattr(self, "draw_anim", self.draw_anim_)
+        system.event(0, self.draw_anim)
 
     def create_bg_img(self):
         img = image.Image(size=(ui.__w, ui.__h))
+        img.draw_rectangle(0, 0, ui.__w, ui.__h, (75, 75, 75), fill=True)
         img.draw_circle(121, 111, int(50),
                             color=(64, 64, 64), thickness=3)  # 10ms
         img.draw_circle(120, 110, int(50),
@@ -32,127 +36,78 @@ class LoadPage:
         return img
 
     
-    def draw_anim(self):
-        text_start = 203
+    def draw_anim_(self):
+        self.loop+=1
+        img = image.Image(size=(250, 100))
+        img.draw_rectangle(0, 0, 250, 100, (75, 75, 75), fill=True)
+        value = math.cos(math.pi * self.loop / 8) * 4
+        if self.loop > 20:
+            img.draw_string(6 - int(value) * 2, -2 + (int(value) % 8) * 2, "A",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_string(6 - int(value), 2 + (int(value) % 8), "A",
+                                color=(0x2d, 0x85, 0xf0), scale=8, mono_space=0)
+        else:
+            img.draw_string(9, 3, "A", color=(
+                64, 64, 64), scale=8, mono_space=0)
 
-        text_x_A = text_start
-        la_A = Label(text_x_A, 73, 8*6, 10*8)
-        la_A.set_text("A", color=(64, 64, 64), scale=8)
+        if self.loop > 40:
+            img.draw_string(9, 2 - int(value) * 5 - 9, "  m",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_string(9, 0 - int(value) * 4 - 8, "  m",
+                                color=(0xf4, 0x43, 0x3c), scale=8, mono_space=0)
+        else:
+            img.draw_string(9, 2, "  m",
+                                color=(64, 64, 64), scale=8, mono_space=0)
 
-        text_x_A2 = text_start
-        la_A2 = Label(text_x_A+5, 70, 8*6, 10*8)
-        la_A2.set_text("A", color=(0x2d, 0x85, 0xf0), scale=8)
+        if self.loop > 40:
+            img.draw_string(9, 2, "    i",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_string(6, 0, "    i",
+                                color=(0xff, 0xbc, 0x32), scale=8, mono_space=0)
 
-        text_start += 8*6
-        text_x_m = text_start
-        la_m = Label(text_x_m, 72, 8*6, 10*8)
-        la_m.set_text("m", color=(64, 64, 64), scale=8)
+            img.draw_rectangle((110, 7, 12, 12),
+                                color=(75, 75, 75), fill=True)
 
-        text_start += 8*6
-        text_x_i = text_start
-        la_i = Label(text_x_i, 72, 8*6, 10*8)
-        la_i.set_text("i",color=(64, 64, 64), scale=8)
+            img.draw_string(65, -26 + int(value), "    .    ",
+                                color=(64, 64, 64), scale=4, mono_space=0)
+            img.draw_string(62, -28 + int(value), "    .    ",
+                                color=(0xff, 0xbc, 0x32), scale=4, mono_space=0)
+        else:
+            img.draw_string(9, 2, "    i",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_rectangle((110, 7, 12, 12),
+                                color=(75, 75, 75), fill=True)
+            img.draw_string(65, -26, "    .    ",
+                                color=(64, 64, 64), scale=4, mono_space=0)
 
-        wig_rec = Widget(304, 77, 12, 12)
-        wig_rec.set_bg_color((0x70, 0x70, 0x70))
+        if self.loop > 60:
+            img.draw_string(9 + int(value) * 2 + 10, 0, "     g",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_string(6 + int(value) * 2 + 10, 0, "     g",
+                                color=(0x0a + int(value) * 50, 0xa8, 0x58 + int(value) * 50), scale=8, mono_space=0)
+        else:
+            img.draw_string(9, 2, "     g",
+                                color=(64, 64, 64), scale=8, mono_space=0)
 
-        text_start += 8*4
-        text_x_g = text_start
-        la_g = Label(text_x_g, 72, 8*6, 10*8)
-        la_g.set_text("g",color=(64, 64, 64), scale=8)
+        if self.loop > 60:
+            img.draw_string(9 - int(value) * 2 + 20, 2, "       o",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+            img.draw_string(6 - int(value) * 2 + 20, 0, "       o",
+                                color=(0xf4, 0x43 + int(value) * 50, 0x3c), scale=8, mono_space=0)
+        else:
+            img.draw_string(9, 2, "       o",
+                                color=(64, 64, 64), scale=8, mono_space=0)
+        
+        ui.canvas.draw_image(img, 200, 70)
+        del img
+        
+        if self.loop == 100:
+            system.remove(self.draw_anim)
 
-        text_start += 8*6
-        text_x_o = text_start
-        la_o = Label(text_x_o, 72, 8*6, 10*8)
-        la_o.set_text("o",color=(64, 64, 64), scale=8)
-
-        ani_A = Animation(la_A2, False) 
-        ani_A.set_duration(10)
-        ani_A.set_start_value(text_x_A2, 73, 8*6, 10*8)
-        ani_A.set_end_value(text_x_A2+30, 76, 8*6, 10*8)
-        ani_A.start()
-
-        # #print(value)
-        # if app.loading or app.loop > 20:
-
-        #     ui.canvas.draw_string(200 - int(value) * 2, 68 + (int(value) % 8) * 2, "A",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-        #     ui.canvas.draw_string(200 - int(value), 72 + (int(value) % 8), "A",
-        #                         color=(0x2d, 0x85, 0xf0), scale=8, mono_space=0)
-        # else:
-        #     ui.canvas.draw_string(203, 73, "A", color=(
-        #         64, 64, 64), scale=8, mono_space=0)
-
-        # if app.loading or app.loop > 40:
-
-        #     ui.canvas.draw_string(203, 72 - int(value) * 5 - 9, "  m",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-        #     ui.canvas.draw_string(200, 70 - int(value) * 4 - 8, "  m",
-        #                         color=(0xf4, 0x43, 0x3c), scale=8, mono_space=0)
-        # else:
-        #     ui.canvas.draw_string(203, 72, "  m",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-
-        # if app.loading or app.loop > 40:
-
-        #     ui.canvas.draw_string(203, 72, "    i",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-        #     ui.canvas.draw_string(200, 70, "    i",
-        #                         color=(0xff, 0xbc, 0x32), scale=8, mono_space=0)
-
-        #     ui.canvas.draw_rectangle((304, 77, 12, 12),
-        #                         color=(0x70, 0x70, 0x70), fill=True)
-
-        #     ui.canvas.draw_string(259, 44 + int(value), "    .    ",
-        #                         color=(64, 64, 64), scale=4, mono_space=0)
-        #     ui.canvas.draw_string(256, 42 + int(value), "    .    ",
-        #                         color=(0xff, 0xbc, 0x32), scale=4, mono_space=0)
-        # else:
-            # ui.canvas.draw_string(203, 72, "    i",
-            #                     color=(64, 64, 64), scale=8, mono_space=0)
-            # ui.canvas.draw_rectangle((304, 77, 12, 12),
-            #                     color=(0x70, 0x70, 0x70), fill=True)
-            # ui.canvas.draw_string(259, 44, "    .    ",
-            #                     color=(64, 64, 64), scale=4, mono_space=0)
-
-        # if app.loading or app.loop > 60:
-
-        #     ui.canvas.draw_string(203 + int(value) * 2 + 10, 72, "     g",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-        #     ui.canvas.draw_string(200 + int(value) * 2 + 10, 70, "     g",
-        #                         color=(0x0a + int(value) * 50, 0xa8, 0x58 + int(value) * 50), scale=8, mono_space=0)
-        # else:
-        #     ui.canvas.draw_string(203, 72, "     g",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-
-        # if app.loading or app.loop > 60:
-
-        #     ui.canvas.draw_string(203 - int(value) * 2 + 20, 72, "       o",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-        #     ui.canvas.draw_string(200 - int(value) * 2 + 20, 70, "       o",
-        #                         color=(0xf4, 0x43 + int(value) * 50, 0x3c), scale=8, mono_space=0)
-        # else:
-        #     ui.canvas.draw_string(203, 72, "       o",
-        #                         color=(64, 64, 64), scale=8, mono_space=0)
-
-        # if app.loading == False and app.loop < 20:
-
-        #     ui.canvas.draw_string(203, 73, "Amigo",
-        #                             color=(64 + int(value) * 2, 64 + int(value) * 2, 64 + int(value) * 2), scale=8, mono_space=0)
-
-        # if app.loop > 70:
-        #     app.loading = True;
-        #     ui.canvas.draw_string(320, 280, "Now Loading...",
-        #                             color=(164 + int(value) * 8, 164 + int(value) * 8, 164 + int(value) * 8), scale=2, mono_space=0)
-
-        # if app.loop == 100:
-        #     app.layer += 1
-
-        # ui.display()
 
 if __name__ == '__main__':
     l = LoadPage()
 
     while True:
         ui.display()
-        system.parallel_cycle()
+        system.cycle()
